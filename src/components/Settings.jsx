@@ -1,3 +1,4 @@
+// filepath: d:\IIIT Kottayam\First Year Kalkitech Internship\mui-test\src\components\Settings.jsx
 import React, { useState } from "react";
 import {
   Grid,
@@ -20,6 +21,7 @@ import {
   ListItemText,
   ListItemSecondaryAction,
   IconButton,
+  Snackbar,
 } from "@mui/material";
 import {
   Edit,
@@ -31,15 +33,15 @@ import {
   Language,
 } from "@mui/icons-material";
 
-const Settings = () => {
+const Settings = ({ themeMode, setThemeMode }) => {
   const [notifications, setNotifications] = useState({
     email: true,
     push: false,
     sms: true,
   });
 
-  const [theme, setTheme] = useState("light");
   const [language, setLanguage] = useState("en");
+  const [settingsSaved, setSettingsSaved] = useState(false);
 
   const handleNotificationChange = (type) => {
     setNotifications((prev) => ({
@@ -48,6 +50,14 @@ const Settings = () => {
     }));
   };
 
+  const handleThemeChange = (event) => {
+    const newTheme = event.target.value;
+    setThemeMode(newTheme);
+    setSettingsSaved(true);
+    setTimeout(() => setSettingsSaved(false), 3000);
+  };
+
+  // ...rest of your component data...
   const users = [
     { id: 1, name: "John Doe", email: "john@example.com", role: "Admin" },
     { id: 2, name: "Jane Smith", email: "jane@example.com", role: "Editor" },
@@ -71,6 +81,13 @@ const Settings = () => {
 
   return (
     <Box sx={{ p: 0 }}>
+      <Snackbar
+        open={settingsSaved}
+        autoHideDuration={3000}
+        message="Settings saved successfully!"
+        onClose={() => setSettingsSaved(false)}
+      />
+
       <Grid container spacing={3}>
         {/* General Settings */}
         <Grid item xs={12} md={6}>
@@ -84,9 +101,9 @@ const Settings = () => {
               <FormControl fullWidth sx={{ mb: 2 }}>
                 <InputLabel>Theme</InputLabel>
                 <Select
-                  value={theme}
+                  value={themeMode}
                   label="Theme"
-                  onChange={(e) => setTheme(e.target.value)}
+                  onChange={handleThemeChange}
                 >
                   <MenuItem value="light">Light</MenuItem>
                   <MenuItem value="dark">Dark</MenuItem>
@@ -109,12 +126,20 @@ const Settings = () => {
               </FormControl>
             </Box>
 
-            <Button variant="contained" color="primary">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                setSettingsSaved(true);
+                setTimeout(() => setSettingsSaved(false), 3000);
+              }}
+            >
               Save Changes
             </Button>
           </Paper>
         </Grid>
 
+        {/* ...rest of your component remains the same... */}
         {/* Notification Settings */}
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 3 }}>
